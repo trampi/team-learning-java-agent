@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '17'
+}
+
+jar {
+    manifest {
+        attributes(
+                "Agent-Class": "com.example.springbootbytebuddy.Agent",
+                "Can-Redefine-Classes": "true",
+                "Can-Retransform-Classes": "true",
+                "Premain-Class": "com.example.springbootbytebuddy.Agent"
+        )
+    }
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'net.bytebuddy:byte-buddy:1.14.5'
+    implementation 'net.bytebuddy:byte-buddy-agent:1.14.5'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
